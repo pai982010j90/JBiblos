@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="Modelo.Persona" table="usuario" discriminator-value="-1">
+        <id name="idPersona" type="int" unsaved-value="null">
+            <column name="dni" sql-type="int" not-null="true"/>
+            <generator class="hilo"/>
+        </id>
+        <discriminator column="tipo_id_tipo_usuario" type="int"
+        formula="case when tipo_id_tipo_usuario in (0,1) then 0 else tipo_id_tipo_usuario end" /> 
+        
+        <property name="nombre" type="string">
+            <column name="nombre_usuario" length="25" not-null="true" />
+        </property>
+        <property name="apellido1" type="string">
+            <column name="apellido1_usuario" length="30" not-null="true" />
+        </property>
+        <property name="apellido2" type="string">
+            <column name="apellido2_usuario" length="30" />
+        </property>
+
+        
+        <subclass name="Modelo.Usuario"  extends="Modelo.Persona" discriminator-value="0">
+            <property name="dni" insert="false" update="false" type="int">
+                <column name="dni"  sql-type="int" not-null="true" />
+            </property> 
+            <property name="clave" type="string">
+                <column name="clave" length="10" not-null="true" />
+            </property>            
+            <property name="email" type="string">
+                <column name="email" length="30" not-null="true" />
+            </property>
+            
+            <property name="direccion" type="string">
+                <column name="direccion" length="45" />
+            </property>
+            
+            <property name="telefono" type="int">
+                <column name="telefono" length="13" />
+            </property>
+            
+            <property name="isAdministrador" type="boolean">
+                <column name="isAdministrador" sql-type="BIT" not-null="true" />
+            </property>            
+            
+        </subclass>
+
+
+    </class>
+</hibernate-mapping>

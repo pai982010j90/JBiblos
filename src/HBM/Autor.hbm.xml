@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 26-nov-2011 14:00:42 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="HBM.Autor" table="autor" catalog="jbiblos">
+        <id name="idAutor" type="java.lang.Short">
+            <column name="id_autor" />
+            <generator class="identity" />
+        </id>
+        <property name="nombreAutor" type="string">
+            <column name="nombre_autor" length="35" not-null="true" />
+        </property>
+        <property name="apellido1Autor" type="string">
+            <column name="apellido1_autor" length="35" not-null="true" />
+        </property>
+        <property name="apellido2Autor" type="string">
+            <column name="apellido2_autor" length="45" />
+        </property>
+        <set name="titulos" inverse="false" table="titulo_has_autor">
+            <key>
+                <column name="autor_id_autor" not-null="true" />
+            </key>
+            <many-to-many entity-name="HBM.Titulo">
+                <column name="titulo_dewey_categoria_dewey" not-null="true" />
+                <column name="titulo_id_apellido" length="3" not-null="true" />
+                <column name="titulo_id_titulo" length="3" not-null="true" />
+            </many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

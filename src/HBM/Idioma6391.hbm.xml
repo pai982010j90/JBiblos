@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 26-nov-2011 14:00:42 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="HBM.Idioma6391" table="idioma_639_1" catalog="jbiblos">
+        <id name="idIdioma6391" type="string">
+            <column name="id_idioma_639_1" length="2" />
+            <generator class="assigned" />
+        </id>
+        <property name="idioma6391" type="string">
+            <column name="idioma_639_1" length="45" not-null="true" />
+        </property>
+        <set name="titulos" inverse="true">
+            <key>
+                <column name="idioma_639_1_id_idioma_639_1" length="2" not-null="true" />
+            </key>
+            <one-to-many class="HBM.Titulo" />
+        </set>
+    </class>
+</hibernate-mapping>

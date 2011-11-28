@@ -1,0 +1,3 @@
+Rev Modelo 15-Nov-11 18:15H
+    - Adaptaciones en los paquetes moviendo todas las clases del modelo al paquete modelo
+    - Configuración de VP para que al generar Java desde UML genere tambien los imports para clases del JDK

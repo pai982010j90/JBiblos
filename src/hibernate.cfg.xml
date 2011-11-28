@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/jbiblos</property>
+    <property name="hibernate.connection.username">jbiblos</property>
+    <property name="hibernate.connection.password">jbiblos</property>
+    <property name="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</property>
+    <property name="hibernate.show_sql">true</property>
+    <property name="hibernate.connection.tinyInt1isBit">true</property>
+    <property name="hibernate.connection.transformedBitIsBoolean">true</property>
+    <mapping resource="HBM/Persona.hbm.xml"/>
+    <mapping resource="HBM/Editorial.hbm.xml"/>
+    <mapping resource="HBM/Titulo.hbm.xml"/>
+    <mapping resource="HBM/Dewey.hbm.xml"/>
+    <mapping resource="HBM/Idioma6391.hbm.xml"/>
+    <mapping resource="HBM/Autor.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

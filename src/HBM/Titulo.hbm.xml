@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 26-nov-2011 14:00:42 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="HBM.Titulo" table="titulo" catalog="jbiblos">
+        
+        <composite-id name="id" class="HBM.TituloId">
+            <key-property name="deweyCategoriaDewey" type="short">
+                <column name="dewey_categoria_dewey" />
+            </key-property>
+            <key-property name="idApellido" type="string">
+                <column name="id_apellido" length="3" />
+            </key-property>
+            <key-property name="idTitulo" type="string">
+                <column name="id_titulo" length="3" />
+            </key-property>
+        </composite-id>
+        
+
+        
+        
+        <many-to-one name="editorial" class="HBM.Editorial" fetch="select">
+            <column name="editorial_id_editorial" not-null="true" />
+        </many-to-one>
+        <many-to-one name="dewey" class="HBM.Dewey" update="false" insert="false" fetch="select">
+            <column name="dewey_categoria_dewey" not-null="true" />
+        </many-to-one>
+
+        <property name="nombreTitulo" type="string">
+            <column name="nombre_titulo" length="50" not-null="true" />
+        </property>
+        <property name="isbn" type="java.lang.Long">
+            <column name="isbn" />
+        </property>
+        <property name="fechaPublicacion" type="date">
+            <column name="fecha_publicacion" length="10" />
+        </property>
+        <property name="fechaAdquisicion" type="timestamp">
+            <column name="fecha_adquisicion" length="19" />
+        </property>
+        <property name="sinopsis" type="string">
+            <column name="sinopsis" length="65535" />
+        </property>
+        <property name="numPaginas" type="java.lang.Short">
+            <column name="num_paginas" />
+        </property>
+        <property name="edicion" type="byte">
+            <column name="edicion" not-null="true" />
+        </property>
+        
+        <many-to-one name="idioma6391" class="HBM.Idioma6391" fetch="select">
+            <column name="idioma_639_1_id_idioma_639_1" length="2" not-null="true" />
+        </many-to-one>
+        
+        <set name="autors" inverse="false" table="titulo_has_autor">
+            <key>
+                <column name="titulo_dewey_categoria_dewey" not-null="true" />
+                <column name="titulo_id_apellido" length="3" not-null="true" />
+                <column name="titulo_id_titulo" length="3" not-null="true" />
+            </key>
+            <many-to-many entity-name="HBM.Autor">
+                <column name="autor_id_autor" not-null="true" />
+            </many-to-many>    
+
+        </set> 
+       
+    </class>
+</hibernate-mapping>
