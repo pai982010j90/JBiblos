@@ -40,6 +40,7 @@ public class VAcercaDe extends javax.swing.JInternalFrame {
         setTitle("Acerca de");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_20.png"))); // NOI18N
 
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 3, 15)); // NOI18N
         jLabel1.setText("JBiblos (Estamos trabajando en ello)");
 
         jLabel2.setText("Programador por:");
@@ -51,6 +52,7 @@ public class VAcercaDe extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel3.setFont(new java.awt.Font("Ubuntu", 2, 15)); // NOI18N
         jLabel3.setText("El equipo de programación...");
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_64.png"))); // NOI18N
@@ -68,11 +70,11 @@ public class VAcercaDe extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(66, 66, 66)
+                .addGap(93, 93, 93)
                 .addComponent(jLabel3)
                 .addContainerGap(87, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(133, 133, 133)
+                .addGap(148, 148, 148)
                 .addComponent(jButtonAceptar)
                 .addContainerGap(150, Short.MAX_VALUE))
         );
