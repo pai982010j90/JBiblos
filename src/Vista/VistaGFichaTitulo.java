@@ -30,6 +30,7 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
 
     Titulo titulo;
     List<Dewey> listaCategoriasDewey;
+    AutoresTableModel autoresTableModel;
 
     /** Creates new form VistaGFichaTitulo */
     public VistaGFichaTitulo(List<Dewey> listaCategoriasDewey) {
@@ -39,8 +40,10 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
     }
 
     private void inicializaComponentesPropios() {
+        jComboBoxCodDewey.addItem("Seleccione categoría");
         for (Dewey dewey : listaCategoriasDewey) {
-            jComboBoxCodDewey.addItem(dewey.getCategoriaDewey() + " - " + dewey.getNombreCategoriaDewey());
+            //jComboBoxCodDewey.addItem(dewey.getCategoriaDewey() + " - " + dewey.getNombreCategoriaDewey());
+            jComboBoxCodDewey.addItem(dewey.toString());
         }
     }
 
@@ -71,6 +74,11 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
         jTextAreaSinopsis = new javax.swing.JTextArea();
         jComboBoxCodDewey = new javax.swing.JComboBox();
 
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
         setTitle("Ficha título");
 
         jLabel2.setText("Nombre");
@@ -126,28 +134,25 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jLabel5))
-                                    .addGap(18, 18, 18)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jScrollPane2)
-                                        .addComponent(jTextFieldNombre)))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jComboBoxCodDewey, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextFieldCodAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jTextFieldCodTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel5))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane2)
+                                    .addComponent(jTextFieldNombre)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxCodDewey, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldCodAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldCodTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(232, 232, 232)
@@ -213,18 +218,22 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
     private javax.swing.JTextField jTextFieldNombre;
     // End of variables declaration//GEN-END:variables
 
-    
     // Implementacion de los metodos de 'GestionarModelo'
     @Override
     public void fijarModelo(Object object) {
         this.titulo = (Titulo) object;
-        this.setTitle("Ficha título: "+titulo.getNombreTitulo());
+
+        //ArrayList<Dewey> lista = new ArrayList<Dewey>();
+        //lista.add(titulo.getDewey());
+        this.setTitle("Ficha título: " + titulo.getNombreTitulo());
+        jComboBoxCodDewey.setSelectedItem(titulo.getDewey().toString());
+
         //jTextFieldCodDewey.setText(new Short(titulo.getId().getDeweyCategoriaDewey()).toString());
         jTextFieldCodAutor.setText(titulo.getId().getIdApellido());
         jTextFieldCodTitulo.setText(titulo.getId().getIdTitulo());
         jTextFieldNombre.setText(titulo.getNombreTitulo());
         jTextAreaSinopsis.setText(titulo.getSinopsis());
-        AutoresTableModel autoresTableModel = new AutoresTableModel(titulo.getAutors());
+        autoresTableModel = new AutoresTableModel(titulo.getAutors());
         jTableAutores.setModel(autoresTableModel);
     }
 
@@ -246,10 +255,13 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
         jTextFieldNombre.setEditable(setEditable);
         jTextFieldNombre.setEditable(setEditable);
         jTextAreaSinopsis.setEditable(setEditable);
+        autoresTableModel.setEditable(setEditable);
+        jComboBoxCodDewey.setEnabled(setEditable);
     }
 
     class AutoresTableModel extends DefaultTableModel {
 
+        boolean editable = true;
         Object[] encabezado = {"Apellidos", "Nombre"};
         private Set<Autor> autores = new HashSet<Autor>();
 
@@ -275,8 +287,26 @@ public class VistaGFichaTitulo extends javax.swing.JInternalFrame implements Ges
             setDataVector(data, encabezado);
         }
 
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            if (!editable) {
+                return false;
+            } else {
+                return super.isCellEditable(rowIndex, columnIndex);
+            }
+        }
+
         public void addAutor(Autor autor) {
             autores.add(autor);
+        }
+
+        public boolean isEditable() {
+            return editable;
+        }
+
+        public void setEditable(boolean editable) {
+            System.out.println("editable:" + editable);
+            this.editable = editable;
         }
     }
 }

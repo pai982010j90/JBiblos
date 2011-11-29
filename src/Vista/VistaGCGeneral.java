@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.swing.JDesktopPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.apache.commons.lang3.text.WordUtils;
 
 /**
  *
@@ -31,7 +32,6 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
 
     VistaGFichaTitulo vGFichaTitulo;
     CatalogoTableModel catalogoTableModel;
-    Catalogo catalogo;
     List<Dewey> listaCategoriasDewey;
     private JDesktopPane jDesktopPane;
 
@@ -53,36 +53,41 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
     // Implementacion de los metodos de 'GestionarModelo'
     @Override
     public void fijarModelo(Object object) {
-        this.catalogo = (Catalogo) object;
-        catalogoTableModel = new CatalogoTableModel(catalogo.getCatalogo().values());
+        assert (object.getClass().getName().endsWith(".Catalogo")) : "fijarModelo: clase suminastrada invalida";
+
+        catalogoTableModel = new CatalogoTableModel((Catalogo) object);
         jTableCatalogo.setModel(catalogoTableModel);
         jTableCatalogo.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
     }
 
     @Override
-    public Catalogo obtenerModelo() {
-        return catalogo;
+    public CatalogoTableModel obtenerModelo() {
+        return catalogoTableModel;
     }
 
     @Override
     public void limpiarModelo() {
-        catalogo = null;
+        catalogoTableModel = null;
     }
 
     @Override
-    public void setEditable(boolean setEditable) {
+    public void setEditable(boolean esEditable) {
+        catalogoTableModel.setEditable(esEditable);
     }
 
     class CatalogoTableModel extends DefaultTableModel {
 
-        Object[] encabezado = {"Código", "F publicación", "Edicion", "Editorial", "Idioma", "Autor"};
+        Catalogo catalogo;
+        boolean editable = true;
+        Object[] encabezado = {"Código", "Nombre", "Idioma", "Autor"};
         //private Collection<Titulo> titulos;
         private ArrayList<Titulo> listaTitulos = new ArrayList<Titulo>();
 
-        public CatalogoTableModel(Collection<Titulo> titulos) {
+        public CatalogoTableModel(Catalogo catalogo) {
             super();
-            //this.titulos = titulos;
+            this.catalogo = catalogo;
+            Collection<Titulo> titulos = catalogo.getCatalogo().values();
             Object data[][] = new Object[titulos.size()][encabezado.length];
 
             int i = 0;
@@ -90,10 +95,8 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
                 int j = 0;
                 // Extraemos los apellidos
                 data[i][j++] = titulo.getId().getDeweyCategoriaDewey() + "-" + titulo.getId().getIdApellido() + "-" + titulo.getId().getIdTitulo();
-                data[i][j++] = titulo.getFechaPublicacion();
-                data[i][j++] = titulo.getEdicion();
-                data[i][j++] = titulo.getEditorial().getNombreEditorial();
-                data[i][j++] = titulo.getIdioma6391().getIdioma6391();
+                data[i][j++] = titulo.getNombreTitulo();
+                data[i][j++] = WordUtils.capitalizeFully(titulo.getIdioma6391().getIdioma6391());
                 Set<Autor> autores = titulo.getAutors();
                 Iterator<Autor> it = autores.iterator();
                 int numAutores = autores.size();
@@ -116,6 +119,14 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
             setDataVector(data, encabezado);
         }
 
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            if (!editable) {
+                return false;
+            } else {
+                return super.isCellEditable(rowIndex, columnIndex);
+            }
+        }
+
         public void addTitulo(Titulo titulo) {
             //titulos.add(titulo);
             listaTitulos.add(titulo);
@@ -123,6 +134,15 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
 
         public Titulo getTitulo(int pos) {
             return listaTitulos.get(pos);
+        }
+
+        public boolean isEditable() {
+            return editable;
+        }
+
+        public void setEditable(boolean editable) {
+            System.out.println("editable:" + editable);
+            this.editable = editable;
         }
     }
 
@@ -140,7 +160,13 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
         jButtonAceptar = new javax.swing.JButton();
         jButtonMostrarFicha = new javax.swing.JButton();
 
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
         setTitle("Catálogo general");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_20.png"))); // NOI18N
 
         jTableCatalogo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -179,26 +205,27 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(156, 156, 156)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButtonAceptar)
                         .addGap(40, 40, 40)
-                        .addComponent(jButtonMostrarFicha))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jButtonMostrarFicha)
+                        .addGap(220, 220, 220))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonAceptar)
-                    .addComponent(jButtonMostrarFicha)))
+                    .addComponent(jButtonMostrarFicha))
+                .addContainerGap())
         );
 
         pack();
@@ -221,6 +248,7 @@ public class VistaGCGeneral extends javax.swing.JInternalFrame implements Gestio
         if (filaSeleccionada > -1) {
             System.out.println("--:" + catalogoTableModel.getTitulo(filaSeleccionada));
             vGFichaTitulo.fijarModelo(catalogoTableModel.getTitulo(filaSeleccionada));
+            vGFichaTitulo.setEditable(false);
             vGFichaTitulo.setVisible(true);
         }
 

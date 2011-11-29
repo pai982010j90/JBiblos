@@ -12,7 +12,7 @@ package Vista;
 
 import Controlador.Controlador;
 import Controlador.Evento;
-import Controlador.Observador;
+import Controlador.GestorEventos;
 import Controlador.TipoEvento;
 
 import java.beans.PropertyChangeEvent;
@@ -21,10 +21,12 @@ import javax.swing.JDesktopPane;
 // Pruebas para el nuevo MVC
 import Vista2.*;
 import Controlador2.*;
+import HBM.Dewey;
 import HBM.Titulo;
 import Modelo.Biblioteca;
 import Modelo.Catalogo;
 import Modelo.Usuario;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -33,7 +35,7 @@ import javax.swing.JOptionPane;
  *
  * @author nanohp
  */
-public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
+public class VistaGPrincipal extends javax.swing.JFrame implements GestorEventos {
 
     // Pruebas para el nuevo MVC
     private Panel2Modelo panelPrueba;
@@ -48,7 +50,7 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     /*
      * AÑADIDO PARA JBIBLOS
      */
-    private Observador padre;
+    private GestorEventos padre;
     private Controlador controlador;
     private Usuario usuario;
     private JDesktopPane jdpDesktop;
@@ -57,13 +59,13 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     private VistaGCConcreta vGCConcreta;
     private VistaGFichaTitulo vGFichaTitulo;
     private VAcercaDe vAcercaDe;
-    private Biblioteca biblioteca;
+    private List<Dewey> listaCategoriasDewey;
 
-    public VistaGPrincipal(Observador padre, Controlador controlador, Usuario usuario, Biblioteca biblioteca) {
-        this.biblioteca = biblioteca;
+    public VistaGPrincipal(GestorEventos padre, Controlador controlador, Usuario usuario) {
         this.padre = padre;
         this.controlador = controlador;
         this.usuario = usuario;
+        controlador.procesarEvento(new Evento(TipoEvento.OBTENER_CAT_DEWEY,null,this));
 
         initComponents();
 
@@ -71,6 +73,7 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     }
 
     private void inicializaComponentesPropios() {
+        
         String tipoUsuario = usuario.isAdministrador() ? " (Administrador)" : " (Lector)";
         setTitle("JBiblos - " + usuario.getNombre() + tipoUsuario);
         jdpDesktop = new JDesktopPane();
@@ -79,17 +82,25 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
         vGPerfilUsuario = new VistaGPerfilUsuario(usuario);
         jdpDesktop.add(vGPerfilUsuario);
 
-        vGCGeneral = new VistaGCGeneral(biblioteca.getCategoriasDewey(), jdpDesktop);
+        vGCGeneral = new VistaGCGeneral(listaCategoriasDewey, jdpDesktop);
         jdpDesktop.add(vGCGeneral);
 
-        vGCConcreta = new VistaGCConcreta(this, controlador, biblioteca.getCategoriasDewey());
+        vGCConcreta = new VistaGCConcreta(this, controlador, listaCategoriasDewey);
         jdpDesktop.add(vGCConcreta);
 
-        vGFichaTitulo = new VistaGFichaTitulo(biblioteca.getCategoriasDewey());
+        vGFichaTitulo = new VistaGFichaTitulo(listaCategoriasDewey);
         jdpDesktop.add(vGFichaTitulo);
 
         vAcercaDe = new VAcercaDe();
         jdpDesktop.add(vAcercaDe);
+
+        // Mostramos los menús en función del tipo de usuario activo
+        if (usuario.isAdministrador()) {
+            jMenuAdministrador.setVisible(true);
+        } else {
+            jMenuAdministrador.setVisible(false);
+        }
+
     }
 
     public VistaGCGeneral getvGCGeneral() {
@@ -112,26 +123,27 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenuBarPrincipal = new javax.swing.JMenuBar();
         jMenuPrincipal = new javax.swing.JMenu();
-        jMenuItemSalir = new javax.swing.JMenuItem();
+        jMenuItemLogout = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemSalir = new javax.swing.JMenuItem();
         jMenuLector = new javax.swing.JMenu();
         jMenuItemMostrarPerfil = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         jMenuItemLectorCGeneral = new javax.swing.JMenuItem();
         jMenuItemLectorCConcreta = new javax.swing.JMenuItem();
         jMenuAdministrador = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
+        jMenuUsuarios = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu6 = new javax.swing.JMenu();
+        jMenuCatalogo = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        jMenuAyuda = new javax.swing.JMenu();
         jMenuItemAcercaDe = new javax.swing.JMenuItem();
-        jMenuItemPrueba = new javax.swing.JMenuItem();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -144,6 +156,18 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
 
         jMenuPrincipal.setText("Principal");
 
+        jMenuItemLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/user_logout_20.png"))); // NOI18N
+        jMenuItemLogout.setText("Logout");
+        jMenuItemLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLogoutActionPerformed(evt);
+            }
+        });
+        jMenuPrincipal.add(jMenuItemLogout);
+        jMenuPrincipal.add(jSeparator1);
+
+        jMenuItemSalir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK));
+        jMenuItemSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/desconexion-de-salida-icono-7025-20.png"))); // NOI18N
         jMenuItemSalir.setText("Salir");
         jMenuItemSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,12 +175,12 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
             }
         });
         jMenuPrincipal.add(jMenuItemSalir);
-        jMenuPrincipal.add(jSeparator1);
 
-        jMenuBar2.add(jMenuPrincipal);
+        jMenuBarPrincipal.add(jMenuPrincipal);
 
         jMenuLector.setText("Lector");
 
+        jMenuItemMostrarPerfil.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/User_info_16.png"))); // NOI18N
         jMenuItemMostrarPerfil.setText("Mostrar Perfil");
         jMenuItemMostrarPerfil.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,75 +189,76 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
         });
         jMenuLector.add(jMenuItemMostrarPerfil);
 
-        jMenuItemLectorCGeneral.setText("Consulta General");
+        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_16.png"))); // NOI18N
+        jMenu3.setText("Catálogo");
+
+        jMenuItemLectorCGeneral.setText("Consulta general");
         jMenuItemLectorCGeneral.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemLectorCGeneralActionPerformed(evt);
             }
         });
-        jMenuLector.add(jMenuItemLectorCGeneral);
+        jMenu3.add(jMenuItemLectorCGeneral);
 
-        jMenuItemLectorCConcreta.setText("Consulta Concreta");
+        jMenuItemLectorCConcreta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/120px-Libro_y_lupa_20.png"))); // NOI18N
+        jMenuItemLectorCConcreta.setText("Consulta concreta");
         jMenuItemLectorCConcreta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemLectorCConcretaActionPerformed(evt);
             }
         });
-        jMenuLector.add(jMenuItemLectorCConcreta);
+        jMenu3.add(jMenuItemLectorCConcreta);
 
-        jMenuBar2.add(jMenuLector);
+        jMenuLector.add(jMenu3);
+
+        jMenuBarPrincipal.add(jMenuLector);
 
         jMenuAdministrador.setText("Administrador");
 
-        jMenu5.setText("Usuario");
+        jMenuUsuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/User_group_20.png"))); // NOI18N
+        jMenuUsuarios.setText("Usuarios");
 
         jMenuItem3.setText("Alta");
-        jMenu5.add(jMenuItem3);
+        jMenuUsuarios.add(jMenuItem3);
 
         jMenuItem4.setText("Baja");
-        jMenu5.add(jMenuItem4);
+        jMenuUsuarios.add(jMenuItem4);
 
         jMenuItem5.setText("Modificar");
-        jMenu5.add(jMenuItem5);
+        jMenuUsuarios.add(jMenuItem5);
 
-        jMenuAdministrador.add(jMenu5);
+        jMenuAdministrador.add(jMenuUsuarios);
 
-        jMenu6.setText("Catálogo");
+        jMenuCatalogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_20.png"))); // NOI18N
+        jMenuCatalogo.setText("Catálogo");
 
         jMenuItem6.setText("Alta");
-        jMenu6.add(jMenuItem6);
+        jMenuCatalogo.add(jMenuItem6);
 
         jMenuItem7.setText("Baja");
-        jMenu6.add(jMenuItem7);
+        jMenuCatalogo.add(jMenuItem7);
 
         jMenuItem8.setText("Modificación");
-        jMenu6.add(jMenuItem8);
+        jMenuCatalogo.add(jMenuItem8);
 
-        jMenuAdministrador.add(jMenu6);
+        jMenuAdministrador.add(jMenuCatalogo);
 
-        jMenuBar2.add(jMenuAdministrador);
+        jMenuBarPrincipal.add(jMenuAdministrador);
 
-        jMenu3.setText("Ayuda");
+        jMenuAyuda.setText("Ayuda");
 
+        jMenuItemAcercaDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/interrogante_20.png"))); // NOI18N
         jMenuItemAcercaDe.setText("A cerca de");
         jMenuItemAcercaDe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemAcercaDeActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItemAcercaDe);
+        jMenuAyuda.add(jMenuItemAcercaDe);
 
-        jMenuItemPrueba.setText("Prueba");
-        jMenuItemPrueba.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemPruebaActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItemPrueba);
+        jMenuBarPrincipal.add(jMenuAyuda);
 
-        jMenuBar2.add(jMenu3);
-
-        setJMenuBar(jMenuBar2);
+        setJMenuBar(jMenuBarPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -253,28 +278,30 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
         System.out.println(usuario);
         vGPerfilUsuario = new VistaGPerfilUsuario(usuario);
         jdpDesktop.add(vGPerfilUsuario);
+        vGPerfilUsuario.setEditable(false);
         vGPerfilUsuario.setVisible(true);
     }//GEN-LAST:event_jMenuItemMostrarPerfilActionPerformed
 
     private void jMenuItemLectorCGeneralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLectorCGeneralActionPerformed
-        controlador.gestionarEvento(new Evento(TipoEvento.CONSULTA_CATALOGO_GENERAL, null, this));
+        controlador.procesarEvento(new Evento(TipoEvento.CONSULTA_CATALOGO_GENERAL, null, this));
+
     }//GEN-LAST:event_jMenuItemLectorCGeneralActionPerformed
-
-    private void jMenuItemSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSalirActionPerformed
-
-        controlador.gestionarEvento(new Evento(TipoEvento.SALIR));     }//GEN-LAST:event_jMenuItemSalirActionPerformed
 
     private void jMenuItemAcercaDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAcercaDeActionPerformed
         vAcercaDe.setVisible(true);
     }//GEN-LAST:event_jMenuItemAcercaDeActionPerformed
 
-    private void jMenuItemPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPruebaActionPerformed
-        panelPrueba.setVisible(true);
-    }//GEN-LAST:event_jMenuItemPruebaActionPerformed
-
     private void jMenuItemLectorCConcretaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLectorCConcretaActionPerformed
         vGCConcreta.setVisible(true);
     }//GEN-LAST:event_jMenuItemLectorCConcretaActionPerformed
+
+    private void jMenuItemLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLogoutActionPerformed
+        controlador.procesarEvento(new Evento(TipoEvento.LOGOUT, null, this));
+    }//GEN-LAST:event_jMenuItemLogoutActionPerformed
+
+    private void jMenuItemSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSalirActionPerformed
+        procesarEvento(new Evento(TipoEvento.SALIR));
+    }//GEN-LAST:event_jMenuItemSalirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -315,11 +342,11 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenuAdministrador;
+    private javax.swing.JMenu jMenuAyuda;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuBar jMenuBarPrincipal;
+    private javax.swing.JMenu jMenuCatalogo;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -329,11 +356,12 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     private javax.swing.JMenuItem jMenuItemAcercaDe;
     private javax.swing.JMenuItem jMenuItemLectorCConcreta;
     private javax.swing.JMenuItem jMenuItemLectorCGeneral;
+    private javax.swing.JMenuItem jMenuItemLogout;
     private javax.swing.JMenuItem jMenuItemMostrarPerfil;
-    private javax.swing.JMenuItem jMenuItemPrueba;
     private javax.swing.JMenuItem jMenuItemSalir;
     private javax.swing.JMenu jMenuLector;
     private javax.swing.JMenu jMenuPrincipal;
+    private javax.swing.JMenu jMenuUsuarios;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     // End of variables declaration//GEN-END:variables
 
@@ -343,23 +371,48 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
     }
 
     @Override
-    public void eventoRespuesta(Evento evento) {
+    public void procesarEvento(Evento evento) {
         Evento eventoAux = null;
+        String mensaje;
+        String tituloStr;
 
         switch (evento.getTipoEvento()) {
             case SALIR:
-                System.out.println("Saliendo");
-                //System.exit(1);
+                mensaje = "¿Desea salir realmente?";
+                tituloStr = "Salir de JBiblos";
+                int respuetaInt;
+
+                // display the JOptionPane showConfirmDialog
+                respuetaInt = JOptionPane.showConfirmDialog(null, mensaje, tituloStr, JOptionPane.YES_NO_OPTION);
+                if (respuetaInt == JOptionPane.YES_OPTION) {
+                    System.out.println("Saliendo");
+                    System.exit(0);
+                }
+
+
                 break;
             case LOGOUT:
-                System.err.println("Controlador->LOGOUT: No implementado.");
+                mensaje = "¿Desea cerrar la sesión realmente?";
+                tituloStr = "Cerra sesión (" + usuario.getDni() + ")";
+                // display the JOptionPane showConfirmDialog
+                respuetaInt = JOptionPane.showConfirmDialog(null, mensaje, tituloStr, JOptionPane.YES_NO_OPTION);
+                if (respuetaInt == JOptionPane.YES_OPTION) {
+                    padre.procesarEvento(new Evento(TipoEvento.LOGOUT));
+                }
+
                 break;
+
+            case OBTENER_CAT_DEWEY:
+                this.listaCategoriasDewey = (List<Dewey>)evento.getInfo();
+                break;
+                
             case CONSULTA_CATALOGO_GENERAL:
                 System.out.println("CONSULTA_CATALOGO_GENERAL");
                 try {
 
                     Catalogo catalogo = (Catalogo) evento.getInfo();
                     vGCGeneral.fijarModelo(catalogo);
+                    vGCGeneral.setEditable(false);
                     vGCGeneral.setVisible(true);
 
                 } catch (NullPointerException ex) {
@@ -382,10 +435,10 @@ public class VistaGPrincipal extends javax.swing.JFrame implements Observador {
 
                     Titulo titulo = (Titulo) evento.getInfo();
                     if (titulo == null) {
-                         JOptionPane.showMessageDialog(this,
-                        "Fallo en la consulta de un titulo",
-                        "Error de consulta",
-                        JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                "Fallo en la consulta de un titulo",
+                                "Error de consulta",
+                                JOptionPane.ERROR_MESSAGE);
                     } else {
                         vGFichaTitulo.fijarModelo(titulo);
                         vGCConcreta.setVisible(false);

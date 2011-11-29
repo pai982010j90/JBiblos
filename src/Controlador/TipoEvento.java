@@ -10,6 +10,8 @@ package Controlador;
  */
 public enum TipoEvento {
 
+    FIJAR_LYL("Fijar Look And Feel"),
+    OBTENER_CAT_DEWEY("Obtener lista categorias Dewey"),
     SALIR("Salir"),
     LOGIN("Login"),
     LOGIN_OK("Login OK"),

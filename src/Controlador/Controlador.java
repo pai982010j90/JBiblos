@@ -11,6 +11,7 @@ import Modelo.Catalogo;
 import Modelo.CodDewey;
 import Modelo.Login;
 import Modelo.Usuario;
+import java.beans.PropertyChangeEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author nanohp
  */
-public class Controlador extends AbstractController {
+public class Controlador extends AbstractController implements GestorEventos {
 
     private Biblioteca biblioteca;
 
@@ -26,7 +27,7 @@ public class Controlador extends AbstractController {
         this.biblioteca = biblioteca;
     }
 
-    public void gestionarEvento(Evento evento) {
+    public void procesarEvento(Evento evento) {
         Evento eventoAux = null;
 
         switch (evento.getTipoEvento()) {
@@ -43,6 +44,7 @@ public class Controlador extends AbstractController {
                     Usuario usuario;
                     try {
                         usuario = biblioteca.login(login.getNombre(), login.getClave());
+                        ((Usuario) usuario).setLookAndFeel(login.getLookAndFeel());
                         //System.out.println("---"+usuario.getClass().getSimpleName()+"-");
                         eventoAux = new Evento(TipoEvento.LOGIN_OK, usuario);
                     } catch (Exception ex) {
@@ -50,13 +52,17 @@ public class Controlador extends AbstractController {
                         System.err.println("ERROR");
                         eventoAux = new Evento(TipoEvento.LOGIN_FALLO);
                     }
-                    evento.getDestinoRespueta().eventoRespuesta(eventoAux);
+                    evento.getDestinoRespueta().procesarEvento(eventoAux);
                 }
 
                 break;
             case LOGOUT:
-                System.err.println("Controlador->LOGOUT: No implementado.");
+                evento.getDestinoRespueta().procesarEvento(new Evento(TipoEvento.LOGOUT));
                 break;
+            case OBTENER_CAT_DEWEY:
+                evento.getDestinoRespueta().procesarEvento(new Evento(TipoEvento.OBTENER_CAT_DEWEY, biblioteca.getCategoriasDewey()));
+                break;
+
             case CONSULTA_CATALOGO_GENERAL:
 
                 System.out.println("CONSULTA_CATALOGO_GENERAL");
@@ -70,10 +76,10 @@ public class Controlador extends AbstractController {
                     System.err.println("CONSULTA_CATALOGO_GENERAL: ERROR");
                     eventoAux = new Evento(TipoEvento.ERROR);
                 }
-                evento.getDestinoRespueta().eventoRespuesta(eventoAux);
+                evento.getDestinoRespueta().procesarEvento(eventoAux);
                 break;
             case CONSULTA_CATALOGO_CONCRETA:
-                System.out.println("CONSULTA_CATALOGO_CONCRETA"+evento.getInfo().getClass().getName());
+                System.out.println("CONSULTA_CATALOGO_CONCRETA" + evento.getInfo().getClass().getName());
                 if (!evento.getInfo().getClass().getName().startsWith("HBM.TituloId")) {
                     assert false : evento.getInfo().getClass().getName() + " clase invalida";
                 }
@@ -89,7 +95,7 @@ public class Controlador extends AbstractController {
                     System.err.println("CONSULTA_CATALOGO_CONCRETA: ERROR");
                     eventoAux = new Evento(TipoEvento.ERROR);
                 }
-                evento.getDestinoRespueta().eventoRespuesta(eventoAux);
+                evento.getDestinoRespueta().procesarEvento(eventoAux);
                 break;
         }
 
@@ -99,5 +105,10 @@ public class Controlador extends AbstractController {
 
     public void changeElementText(String newText) {
         setModelProperty(ELEMENT_TEXT_PROPERTY, newText);
+    }
+
+    @Override
+    public void modelPropertyChange(PropertyChangeEvent evt) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

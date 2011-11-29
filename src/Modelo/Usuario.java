@@ -8,6 +8,7 @@ public class Usuario extends Persona {
     private boolean isAdministrador;
     private String direccion;
     private int telefono;
+    private String lookAndFeel;
     
 
     public Usuario() {
@@ -89,6 +90,14 @@ public class Usuario extends Persona {
 
     public void setTelefono(int telefono) {
         this.telefono = telefono;
+    }
+
+    public String getLookAndFeel() {
+        return lookAndFeel;
+    }
+
+    public void setLookAndFeel(String lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
     }
     
     

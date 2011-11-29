@@ -12,7 +12,7 @@ package Vista;
 
 import Controlador.Controlador;
 import Controlador.Evento;
-import Controlador.Observador;
+import Controlador.GestorEventos;
 import Controlador.TipoEvento;
 import HBM.Dewey;
 import HBM.TituloId;
@@ -20,20 +20,21 @@ import Modelo.CategoriaDewey;
 import Modelo.CodDewey;
 import java.util.List;
 import javax.swing.JDesktopPane;
+import javax.swing.text.PlainDocument;
 
 /**
  *
  * @author tutto
  */
-public class VistaGCConcreta extends javax.swing.JInternalFrame {
+public class VistaGCConcreta extends javax.swing.JInternalFrame implements GestionarModelo {
 
     private TituloId tituloId;
     private Controlador controlador;
-    private Observador observadorPadre;
+    private GestorEventos observadorPadre;
     List<Dewey> listaCategoriasDewey;
 
     /** Creates new form VistaGCConcreta */
-    public VistaGCConcreta(Observador padre, Controlador controlador, List<Dewey> listaCategoriasDewey) {
+    public VistaGCConcreta(GestorEventos padre, Controlador controlador, List<Dewey> listaCategoriasDewey) {
         this.observadorPadre = padre;
         this.controlador = controlador;
         this.listaCategoriasDewey = listaCategoriasDewey;
@@ -58,31 +59,32 @@ public class VistaGCConcreta extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButtonBuscar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jComboBoxCategoriasDewey = new javax.swing.JComboBox();
         jTextFieldCodApellido = new javax.swing.JTextField();
         jTextFieldCodTitulo = new javax.swing.JTextField();
-        jButtonReset = new javax.swing.JButton();
+        jButtonBuscar = new javax.swing.JButton();
         javax.swing.JButton jButtonCancelar = new javax.swing.JButton();
-        jComboBoxCategoriasDewey = new javax.swing.JComboBox();
+        jButtonReset = new javax.swing.JButton();
 
-        jButtonBuscar.setText("Buscar");
-        jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonBuscarActionPerformed(evt);
-            }
-        });
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setTitle("Buscar título");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/images/120px-Libro_y_lupa_20.png"))); // NOI18N
 
         jLabel1.setText("Dewey");
+
+        jComboBoxCategoriasDewey.setModel(new javax.swing.DefaultComboBoxModel());
 
         jTextFieldCodApellido.setColumns(3);
 
         jTextFieldCodTitulo.setColumns(3);
 
-        jButtonReset.setText("Reset");
-        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBuscar.setText("Buscar");
+        jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonResetActionPerformed(evt);
+                jButtonBuscarActionPerformed(evt);
             }
         });
 
@@ -93,51 +95,52 @@ public class VistaGCConcreta extends javax.swing.JInternalFrame {
             }
         });
 
-        jComboBoxCategoriasDewey.setModel(new javax.swing.DefaultComboBoxModel());
+        jButtonReset.setText("Reset");
+        jButtonReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonResetActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jButtonBuscar)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jButtonCancelar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonReset)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxCategoriasDewey, 0, 164, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
-                .addComponent(jTextFieldCodApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextFieldCodTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(jComboBoxCategoriasDewey, 0, 181, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldCodApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldCodTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButtonBuscar)
+                        .addGap(33, 33, 33)
+                        .addComponent(jButtonCancelar)
+                        .addGap(31, 31, 31)
+                        .addComponent(jButtonReset)
+                        .addGap(57, 57, 57))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(54, 54, 54)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jComboBoxCategoriasDewey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldCodApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldCodTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonBuscar)
                     .addComponent(jButtonCancelar)
-                    .addComponent(jButtonReset))
-                .addGap(74, 74, 74))
+                    .addComponent(jButtonReset)
+                    .addComponent(jButtonBuscar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -163,7 +166,7 @@ public class VistaGCConcreta extends javax.swing.JInternalFrame {
 
             tituloId = new TituloId(dewey.getCategoriaDewey(),
                     jTextFieldCodApellido.getText(), jTextFieldCodTitulo.getText());
-            controlador.gestionarEvento(new Evento(TipoEvento.CONSULTA_CATALOGO_CONCRETA, tituloId, observadorPadre));
+            controlador.procesarEvento(new Evento(TipoEvento.CONSULTA_CATALOGO_CONCRETA, tituloId, observadorPadre));
         }
     }//GEN-LAST:event_jButtonBuscarActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -174,4 +177,31 @@ public class VistaGCConcreta extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextFieldCodApellido;
     private javax.swing.JTextField jTextFieldCodTitulo;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void fijarModelo(Object tituloId) {
+        this.tituloId = (TituloId) tituloId;
+    }
+
+    @Override
+    public Object obtenerModelo() {
+        Dewey dewey = (Dewey) jComboBoxCategoriasDewey.getSelectedItem();
+        return new TituloId(dewey.getCategoriaDewey(),
+                jTextFieldCodApellido.getText(), jTextFieldCodTitulo.getText());
+    }
+
+    @Override
+    public void limpiarModelo() {
+        jComboBoxCategoriasDewey.setSelectedIndex(0);
+        jTextFieldCodApellido.setText("");
+        jTextFieldCodTitulo.setText("");
+        tituloId = null;
+    }
+
+    @Override
+    public void setEditable(boolean esEditable) {
+        jComboBoxCategoriasDewey.setEnabled(esEditable);
+        jTextFieldCodApellido.setEditable(esEditable);
+        jTextFieldCodTitulo.setEditable(esEditable);
+    }
 }

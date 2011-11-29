@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  * @author Robert Eckstein
  */
 
-public interface Observador {
+public interface GestorEventos {
     
     /**
      * Called by the controller when it needs to pass along a property change 
@@ -32,7 +32,7 @@ public interface Observador {
      */
     
     public void modelPropertyChange(PropertyChangeEvent evt);
-    public void eventoRespuesta(Evento evento);
+    public void procesarEvento(Evento evento);
     
     
 }

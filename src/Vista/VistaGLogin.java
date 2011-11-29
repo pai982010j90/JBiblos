@@ -12,27 +12,44 @@ package Vista;
 
 import Controlador.Controlador;
 import Controlador.Evento;
-import Controlador.Observador;
+import Controlador.GestorEventos;
 import Controlador.TipoEvento;
 import Modelo.Login;
 import Modelo.Usuario;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+
 
 /**
  *
  * @author nanohp
  */
-public class VistaGLogin extends javax.swing.JFrame implements Observador {
+public class VistaGLogin extends javax.swing.JFrame implements GestorEventos, GestionarModelo {
 
     private Controlador controlador;
-    private Observador padre;
+    private GestorEventos padre;
 
     /** Creates new form VistaGLogin */
-    public VistaGLogin(Observador padre, Controlador controlador) {
+    public VistaGLogin(GestorEventos padre, Controlador controlador) {
         this.padre = padre;
         this.controlador = controlador;
         initComponents();
+        inicializaComponentesPropios();
+    }
+
+    public void inicializaComponentesPropios() {
+      
+
+    }
+
+    public void paint(Graphics g) {
     }
 
     /** This method is called from within the constructor to
@@ -44,15 +61,22 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFileChooser1 = new javax.swing.JFileChooser();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTFUsuario = new javax.swing.JTextField();
         jTFClave = new javax.swing.JPasswordField();
         jBotonLoginAceptar = new javax.swing.JButton();
         jBotonLoginCancelar = new javax.swing.JButton();
+        jLabelJBiblos = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jComboBoxLookAndFeel = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("JBiblos - Login");
+        setTitle("Bienvenido a JBiblos - Login");
+        setAlwaysOnTop(true);
+        setResizable(false);
 
         jLabel1.setText("Usuario");
 
@@ -62,6 +86,7 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
 
         jTFClave.setColumns(10);
 
+        jBotonLoginAceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/User_info_16.png"))); // NOI18N
         jBotonLoginAceptar.setText("Aceptar");
         jBotonLoginAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,44 +101,70 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
             }
         });
 
+        jLabelJBiblos.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelJBiblos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/catalogo_64.png"))); // NOI18N
+
+        jLabel3.setText("JBiblos");
+
+        jComboBoxLookAndFeel.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "GTK", "Metal", "System", "Motif" }));
+
+        jLabel4.setText("L&F");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jTFUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTFClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelJBiblos)
+                    .addComponent(jLabel3))
+                .addGap(20, 20, 20))
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                        .addComponent(jTFUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jBotonLoginAceptar)
-                        .addGap(40, 40, 40)
-                        .addComponent(jBotonLoginCancelar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(56, 56, 56)
-                        .addComponent(jTFClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(57, 57, 57)
+                .addComponent(jBotonLoginAceptar)
+                .addGap(18, 18, 18)
+                .addComponent(jBotonLoginCancelar)
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTFUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTFClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBotonLoginAceptar)
-                    .addComponent(jBotonLoginCancelar))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTFUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTFClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBoxLookAndFeel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jBotonLoginCancelar)
+                            .addComponent(jBotonLoginAceptar)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabelJBiblos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -121,7 +172,10 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
 
     private void jBotonLoginAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonLoginAceptarActionPerformed
         Login login = new Login(jTFUsuario.getText().trim(), jTFClave.getText().trim());
-        controlador.gestionarEvento(new Evento(TipoEvento.LOGIN, login, this));
+        login.setLookAndFeel((String)jComboBoxLookAndFeel.getSelectedItem());
+        
+        
+        controlador.procesarEvento(new Evento(TipoEvento.LOGIN, login, this));
     }//GEN-LAST:event_jBotonLoginAceptarActionPerformed
 
     private void jBotonLoginCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonLoginCancelarActionPerformed
@@ -142,6 +196,10 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
+
+
+
                 }
             }
         } catch (ClassNotFoundException ex) {
@@ -166,8 +224,13 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBotonLoginAceptar;
     private javax.swing.JButton jBotonLoginCancelar;
+    private javax.swing.JComboBox jComboBoxLookAndFeel;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabelJBiblos;
     private javax.swing.JPasswordField jTFClave;
     private javax.swing.JTextField jTFUsuario;
     // End of variables declaration//GEN-END:variables
@@ -178,7 +241,7 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
     }
 
     @Override
-    public void eventoRespuesta(Evento evento) {
+    public void procesarEvento(Evento evento) {
         Object info = evento.getInfo();
 
         switch (evento.getTipoEvento()) {
@@ -186,7 +249,10 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
             case LOGIN_OK:
                 if (info.getClass().getName().startsWith("Modelo.Usuario")) {
                     setVisible(false);
-                    padre.eventoRespuesta(new Evento(TipoEvento.LOGIN_OK, info));
+                    System.out.println("--------"+jComboBoxLookAndFeel.getSelectedItem());
+                    ((Usuario)info).setLookAndFeel((String)jComboBoxLookAndFeel.getSelectedItem());
+                    padre.procesarEvento(new Evento(TipoEvento.FIJAR_LYL, jComboBoxLookAndFeel.getSelectedItem()));
+                    padre.procesarEvento(new Evento(TipoEvento.LOGIN_OK, info));
                 } else {
                     assert false : info.getClass().getName() + " clase no valida";
                 }
@@ -201,5 +267,26 @@ public class VistaGLogin extends javax.swing.JFrame implements Observador {
                 throw new AssertionError();
         }
 
+    }
+
+    @Override
+    public void fijarModelo(Object object) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object obtenerModelo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void limpiarModelo() {
+        jTFUsuario.setText("");
+        jTFClave.setText("");
+    }
+
+    @Override
+    public void setEditable(boolean setEditable) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -12,6 +12,7 @@ public class Login {
 
     String nombre;
     String clave;
+    String lookAndFeel;
 
 
     public Login(String nombre, String clave) {
@@ -35,6 +36,16 @@ public class Login {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public String getLookAndFeel() {
+        return lookAndFeel;
+    }
+
+    public void setLookAndFeel(String lookAndFeel) {
+        this.lookAndFeel = lookAndFeel;
+    }
+    
+    
 
     @Override
     public String toString() {
