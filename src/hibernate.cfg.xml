@@ -17,5 +17,8 @@
     <mapping resource="HBM/Dewey.hbm.xml"/>
     <mapping resource="HBM/Idioma6391.hbm.xml"/>
     <mapping resource="HBM/Autor.hbm.xml"/>
+    <mapping resource="H2/Plantilla.hbm.xml"/>
+    <mapping resource="H2/Tipo.hbm.xml"/>
+    <mapping resource="H2/Usuario.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
